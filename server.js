@@ -1,10 +1,12 @@
-
 const express = require('express');
 const router = express.Router();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const {ShoppingList, Recipes} = require('./models');
+const {
+  ShoppingList,
+  Recipes
+} = require('./models');
 
 const jsonParser = bodyParser.json();
 const app = express();
@@ -34,7 +36,7 @@ app.get('/shopping-list', (req, res) => {
 app.post('/shopping-list', jsonParser, (req, res) => {
   // ensure `name` and `budget` are in request body
   const requiredFields = ['name', 'budget'];
-  for (let i=0; i<requiredFields.length; i++) {
+  for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
       const message = `Missing \`${field}\` in request body`
@@ -53,6 +55,12 @@ app.delete('/shopping-list/:id', (req, res) => {
   res.status(204).end();
 });
 
+app.delete('/recipes/:id', function(request, response) {
+  Recipes.delete(request.params.id);
+  console.log(`Deleted shopping list item \`${request.params.id}\``);
+  response.status(204).end();
+});
+
 
 // when new recipe added, ensure has required fields. if not,
 // log error and return 400 status code with hepful message.
@@ -60,7 +68,7 @@ app.delete('/shopping-list/:id', (req, res) => {
 app.post('/recipes', jsonParser, (req, res) => {
   // ensure `name` and `budget` are in request body
   const requiredFields = ['name', 'ingredients'];
-  for (let i=0; i<requiredFields.length; i++) {
+  for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
       const message = `Missing \`${field}\` in request body`
